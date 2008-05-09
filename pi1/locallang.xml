@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for plugin &quot;tx_donations&quot;</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="no_template">No template defined!</label>
+			<label index="configuration_error">Configuration error</label>
+			<label index="donation_error1">Please fill in all mandatory fields!</label>
+			<label index="donation_error2">Donation amount must be greater than zero!</label>
+			<label index="donation_error3">Donation amount is smaller than minimum amount!</label>
+			<label index="donation_error4">Donation amount is larger than maximum amount!</label>
+			<label index="continue">continue &gt;&gt;</label>
+			<label index="payment_methods_error">No payment methods available!</label>
+			<label index="back_list_link">Back to projects list</label>
+			<label index="back">&lt;&lt; back</label>
+			<label index="confirm">confirm &gt;&gt;</label>
+			<label index="donate_link">Make donation</label>
+			<label index="details_link">Details</label>
+			<label index="payment_declined">Payment declined!</label>
+			<label index="transaction_init_failed">ERROR: Could not initialize transaction.</label>
+			<label index="transaction_settings_failed">ERROR: Setting details of transaction failed.</label>
+			<label index="no_javascript_message">JavaScript is not activated, the "Back" button of the form will not work. Please use the Back button of your browser.</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="no_template">Aucun modèle défini!</label>
+			<label index="configuration_error">Erreur de configuration</label>
+			<label index="donation_error1">Veuillez remplir tous les champs obligatoires!</label>
+			<label index="donation_error2">Le montant du don doit être supérieur à zéro!</label>
+			<label index="donation_error3">Le montant du don est inférieur au minimum!</label>
+			<label index="donation_error4">Le montant du don est supérieur au maximum!</label>
+			<label index="continue">continue &gt;&gt;</label>
+			<label index="payment_methods_error">Aucune méthode de paiement disponible!</label>
+			<label index="back_list_link">Retour à la liste des projets</label>
+			<label index="back">&lt;&lt; retour</label>
+			<label index="confirm">confirmer &gt;&gt;</label>
+			<label index="donate_link">Faire un don</label>
+			<label index="details_link">Détails</label>
+			<label index="payment_declined">Paiement refusé!</label>
+			<label index="transaction_init_failed">ERREUR: Impossible d'initialiser la transaction.</label>
+			<label index="transaction_settings_failed">ERREUR: La définition des détails de la transaction a échoué.</label>
+			<label index="no_javascript_message">Le JavaScript n'est pas activé, le bouton "Retour" du formulaire ne va pas fonctionner. Veuillez utiliser le bouton Retour de votre navigateur.</label>
+		</languageKey>
+	</data>
+</T3locallang>

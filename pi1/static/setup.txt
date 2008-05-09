@@ -1,0 +1,48 @@
+/*
+ * Standard TS config
+ *
+ * $Id: setup.txt 3432 2007-07-29 18:20:05Z fsuter $
+ */
+plugin.tx_donations_pi1 {
+	template = typo3conf/ext/donations/pi1/example.tmpl
+	disableProjects = 0
+	defaultCurrency = USD
+	depositsPID = 0
+	errorWrap.wrap = <div class="error">|</div>
+	formName = donateForm
+	paymethods (
+        paymentlib_offline_bank_check,
+        paymentlib_offline_giro,
+        paymentlib_offline_cod,
+        paymentlib_offline_cash,
+	)
+	donateView {
+		projectTitle.field = project
+		projectTitle.wrap = <h2>Make a donation to project "|"</h2>
+		amountMin.wrap = (Min:&nbsp;|,
+		amountMax.wrap = Max:&nbsp;|)
+	}
+	confirmView {
+		projectTitle.field = project
+		projectTitle.wrap = <h2>Confirm details for donation to "|"</h2>
+	}
+	receiptView {
+		projectTitle.field = project
+		projectTitle.wrap = <h2>Receipt for donation to "|"</h2>
+	}
+	thankMessage = TEXT
+	thankMessage.value = Thank you for your donation!
+	thankMessage.wrap = <p>|</p>
+	mail {
+		sendToAdmin = 1
+		sendToUser = 1
+		senderMail = admin@yoursite.com
+		senderName = Site Admin
+		adminMail = admin@yoursite.com
+		adminMessage = The following donation has been received:
+		adminSubject = New donation received
+		userMessage = Thank you for your donation! Here is your receipt:
+		userSubject = Donation confirmation
+		dateWrap.strftime = %Y-%m-%d
+	}
+}

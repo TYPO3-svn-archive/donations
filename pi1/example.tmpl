@@ -1,0 +1,251 @@
+<!--
+Example template for donations extension
+
+$Id: example.tmpl 3432 2007-07-29 18:20:05Z fsuter $
+-->
+
+<!-- ###LISTVIEW### begin -->
+<h2>Projects in need of donations</h2>
+<div class="tx-donations-listview">###ITEMS###</div>
+<!-- ###LISTVIEW### end -->
+
+
+
+
+<!-- ###LISTVIEW_ITEM### begin -->
+<h3>###LOGO###&nbsp;&nbsp;###TITLE###</h3>
+<p>###SHORT_DESC### ###DETAILS_LINK###</p>
+<p>###AMOUNT_DONATED### / ###AMOUNT_NEEDED### ###CURRENCY### ###DONATE_LINK###</p>
+<hr />
+<!-- ###LISTVIEW_ITEM### end -->
+
+
+
+
+<!-- ###SINGLEVIEW### begin -->
+<div class="tx-donations-singleview">
+    <h3>###LOGO###&nbsp;&nbsp;###TITLE###</h3>
+    <p>###AMOUNT_DONATED### / ###AMOUNT_NEEDED### ###CURRENCY### ###DONATE_LINK###</p>
+    <p>###SHORT_DESC###</p>
+    <p>###LONG_DESC###</p>
+    <p>###BACK_LINK###</p>
+</div>
+<!-- ###SINGLEVIEW### end -->
+
+
+
+
+<!-- ###DONATEVIEW### begin -->
+###PROJECT_TITLE###
+###ERROR_MESSAGE###
+<div class="tx-donations-donateview">
+    <form action="###FORM_URL###" name="###FORM_NAME###" method="post" onsubmit="return donationsCheckForm(this)">
+    	###HIDDEN_FIELDS###
+        <fieldset>
+            <legend>Select payment method and donation amount</legend>
+            <table cellpadding="5" cellspacing="0" border="0">
+                <tr>
+                    <td>Payment type *</td>
+                    <td>###PAYMETHODS###</td>
+                </tr>
+                <tr>
+                    <td>Amount *</td>
+                    <td><input type="text" name="tx_donations[amount]" value="###AMOUNT_VAL###" size="12" /> ###AMOUNT_MIN### ###AMOUNT_MAX###</td>
+                </tr>
+            </table>
+        </fieldset>
+        <br />
+        <fieldset>
+        <legend>Your personal information</legend>
+            <table cellpadding="5" cellspacing="0" border="0">
+                <tr>
+                    <td>Company</td>
+                    <td><input type="text" name="tx_donations[company]" value="###COMPANY_VAL###" size="32" /></td>
+                </tr>
+                <tr>
+                    <td>Name *</td>
+                    <td><input type="text" name="tx_donations[name]" value="###NAME_VAL###" size="32" /></td>
+                </tr>
+                <tr>
+                    <td>Address</td>
+                    <td><input type="text" name="tx_donations[addr]" value="###ADDR_VAL###" size="32" /></td>
+                </tr>
+                <tr>
+                    <td>Zip code/City</td>
+                    <td>
+                        <input type="text" name="tx_donations[zip]" value="###ZIP_VAL###" size="6" />
+                        <input type="text" name="tx_donations[city]" value="###CITY_VAL###" size="23" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Country</td>
+                    <td><input type="text" name="tx_donations[country]" value="###COUNTRY_VAL###" /></td>
+                </tr>
+                <tr>
+                    <td>Email *</td>
+                    <td><input type="text" name="tx_donations[email]" value="###EMAIL_VAL###" /></td>
+                </tr>
+            </table>
+        </fieldset>
+        <p>Fields marked with a * are mandatory</p>
+        <br />
+        ###BUTTONS###
+    </form>
+    <p>###BACK_LINK###</p>
+</div>
+<!-- ###DONATEVIEW### end -->
+
+
+
+
+<!-- ###CONFIRMVIEW### begin -->
+###PROJECT_TITLE###
+###ERROR_MESSAGE###
+<div class="tx-donations-confirmview">
+    <form action="###FORM_URL###" name="###FORM_NAME###" method="post" ###FORM_FORM_PARAMS###>
+        <fieldset>
+            <legend>Payment information</legend>
+            <table cellpadding="5" cellspacing="0" border="0">
+                <tr>
+                    <td>Payment type</td>
+                    <td>###PAYMETHOD###</td>
+                </tr>
+                <tr>
+                    <td>Amount</td>
+                    <td>###AMOUNT_VAL### ###CURRENCY###</td>
+                </tr>
+                ###PAYMENT_DETAILS###
+            </table>
+        </fieldset>
+        <br />
+        <fieldset>
+        <legend>Your personal information</legend>
+            <table cellpadding="5" cellspacing="0" border="0">
+                <tr>
+                    <td>Company</td>
+                    <td>###COMPANY_VAL###</td>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td>###NAME_VAL###</td>
+                </tr>
+                <tr>
+                    <td>Address</td>
+                    <td>###ADDR_VAL###</td>
+                </tr>
+                <tr>
+                    <td>Zip code/City</td>
+                    <td>###ZIP_VAL### ###CITY_VAL###</td>
+                </tr>
+                <tr>
+                    <td>Country</td>
+                    <td>###COUNTRY_VAL###</td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td>###EMAIL_VAL###</td>
+                </tr>
+            </table>
+        </fieldset>
+        <br />
+        ###HIDDEN_FIELDS###
+        ###BUTTONS###
+    </form>
+</div>
+<!-- ###CONFIRMVIEW### end -->
+
+
+
+
+<!-- ###RECEIPTVIEW### begin -->
+###PROJECT_TITLE###
+###MESSAGE###
+<div class="tx-donations-receiptview">
+        <fieldset>
+            <legend>Payment info</legend>
+            <table cellpadding="5" cellspacing="0" border="0">
+            	<tr>
+            		<td>Payment reference</td>
+            		<td>###PAYMENT_REFERENCE###</td>
+                <tr>
+                    <td>Payment type</td>
+                    <td>###PAYMETHOD###</td>
+                </tr>
+                <tr>
+                    <td>Amount</td>
+                    <td>###AMOUNT_VAL### ###CURRENCY###</td>
+                </tr>
+            </table>
+        </fieldset>
+        <br />
+        <fieldset>
+        <legend>Your personal information</legend>
+            <table cellpadding="5" cellspacing="0" border="0">
+                <tr>
+                    <td>Company</td>
+                    <td>###COMPANY_VAL###</td>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td>###NAME_VAL###</td>
+                </tr>
+                <tr>
+                    <td>Address</td>
+                    <td>###ADDR_VAL###</td>
+                </tr>
+                <tr>
+                    <td>Zip code/City</td>
+                    <td>###ZIP_VAL### ###CITY_VAL###</td>
+                </tr>
+                <tr>
+                    <td>Country</td>
+                    <td>###COUNTRY_VAL###</td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td>###EMAIL_VAL###</td>
+                </tr>
+            </table>
+        </fieldset>
+</div>
+<!-- ###RECEIPTVIEW### end -->
+
+
+
+
+<!-- ###ADMINMAIL### begin -->
+###MESSAGE###
+
+Project: ###PROJECT_TITLE###
+Company: ###COMPANY_VAL###
+Name: ###NAME_VAL###
+Address: ###ADDR_VAL###
+Zip code/City: ###ZIP_VAL### ###CITY_VAL###
+Country: ###COUNTRY_VAL###
+Email: ###EMAIL_VAL###
+
+Payment reference: ###PAYMENT_REFERENCE###
+Payment type: ###PAYMETHOD###
+Amount: ###AMOUNT_VAL### ###CURRENCY###
+Date: ###DATE_VAL###
+<!-- ###ADMINMAIL### end -->
+
+
+
+
+<!-- ###USERMAIL### begin -->
+###MESSAGE###
+
+Project: ###PROJECT_TITLE###
+Company: ###COMPANY_VAL###
+Name: ###NAME_VAL###
+Address: ###ADDR_VAL###
+Zip code/City: ###ZIP_VAL### ###CITY_VAL###
+Country: ###COUNTRY_VAL###
+Email: ###EMAIL_VAL###
+
+Payment reference: ###PAYMENT_REFERENCE###
+Payment type: ###PAYMETHOD###
+Amount: ###AMOUNT_VAL### ###CURRENCY###
+Date: ###DATE_VAL###
+<!-- ###USERMAIL### end -->

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>database</type>
+		<description>Language labels for database tables/fields belonging to extension 'donations'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tx_donations_projects">Projects</label>
+			<label index="tx_donations_projects.title">Title</label>
+			<label index="tx_donations_projects.logo">Logo</label>
+			<label index="tx_donations_projects.short_desc">Short description</label>
+			<label index="tx_donations_projects.long_desc">Long description</label>
+			<label index="tx_donations_projects.details_url">Link to further details</label>
+			<label index="tx_donations_projects.amount">Amount (in smallest unit)</label>
+			<label index="tx_donations_projects.currency">Currency</label>
+			<label index="tx_donations_projects.min_payment">Minimun payment</label>
+			<label index="tx_donations_deposits">Deposits</label>
+			<label index="tx_donations_deposits.project_uid">Project</label>
+			<label index="tx_donations_deposits.cust_company">Company</label>
+			<label index="tx_donations_deposits.cust_name">Name</label>
+			<label index="tx_donations_deposits.cust_addr">Address</label>
+			<label index="tx_donations_deposits.cust_city">City</label>
+			<label index="tx_donations_deposits.cust_zip">Zipcode</label>
+			<label index="tx_donations_deposits.cust_country">Country</label>
+			<label index="tx_donations_deposits.cust_email">Email</label>
+			<label index="tx_donations_deposits.amount">Amount</label>
+			<label index="tt_content.list_type">Donations</label>
+		</languageKey>
+		<languageKey index="dk" type="array">
+			<label index="tx_donations_projects">Projekter</label>
+			<label index="tx_donations_projects.title">Titel</label>
+			<label index="tx_donations_projects.logo">Logo</label>
+			<label index="tx_donations_projects.short_desc">Kort beskrivelse</label>
+			<label index="tx_donations_projects.long_desc">Længere beskrivelse</label>
+			<label index="tx_donations_projects.details_url">Link til yderligere detaljer</label>
+			<label index="tx_donations_projects.amount">Beløb (i mindste enhed)</label>
+			<label index="tx_donations_projects.currency">Valuta</label>
+			<label index="tx_donations_projects.min_payment">Minimumsbeløb</label>
+			<label index="tx_donations_deposits">Indbetalinger</label>
+			<label index="tx_donations_deposits.project_uid">Projekt</label>
+			<label index="tx_donations_deposits.cust_company">Firma</label>
+			<label index="tx_donations_deposits.cust_name">Navn</label>
+			<label index="tx_donations_deposits.cust_addr">Adresse</label>
+			<label index="tx_donations_deposits.cust_city">By</label>
+			<label index="tx_donations_deposits.cust_zip">Postnr.</label>
+			<label index="tx_donations_deposits.cust_country">Land</label>
+			<label index="tx_donations_deposits.cust_email">Email</label>
+			<label index="tx_donations_deposits.amount">Beløb</label>
+			<label index="tt_content.list_type">Donations</label>
+		</languageKey>
+	</data>
+</T3locallang>
