@@ -671,25 +671,6 @@ Check out rules and see what to apply
 	}
 
 	/**
-	 * This method detects whether a given string is UTF-8 encoded or not
-	 * (taken from a comment from chris@w3style.co.uk on http://www.php.net/mb_detect_encoding)
-	 *
-	 * @param string	string to test
-	 * @return true if string is UTF-8, false otherwise
-	 */
-	function is_utf8($string) {
-		return preg_match('%(?:
-		[\xC2-\xDF][\x80-\xBF]        # non-overlong 2-byte
-		|\xE0[\xA0-\xBF][\x80-\xBF]               # excluding overlongs
-		|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}      # straight 3-byte
-		|\xED[\x80-\x9F][\x80-\xBF]               # excluding surrogates
-		|\xF0[\x90-\xBF][\x80-\xBF]{2}    # planes 1-3
-		|[\xF1-\xF3][\x80-\xBF]{3}                  # planes 4-15
-		|\xF4[\x80-\x8F][\x80-\xBF]{2}    # plane 16
-		)+%xs', $string);
-	}
-
-	/**
      * This method initialises the template and the localisation stuff
      *
      * @return		mixed		Returns an array with error messages if errors detected, otherwise boolean false
@@ -700,10 +681,6 @@ Check out rules and see what to apply
 
         // Get template
         $this->template = trim($this->cObj->fileResource($this->conf['template']));
-        if ($GLOBALS['TSFE']->renderCharset == 'utf-8' && !$this->is_utf8($this->template)) {
-            $localCharset = !empty($GLOBALS['TSFE']->csConvObj->charSetArray[$this->LLkey]) ?  $GLOBALS['TSFE']->csConvObj->charSetArray[$this->LLkey] : 'iso-8859-1';
-            $this->template = trim($GLOBALS['TSFE']->csConvObj->utf8_encode($this->template, $localCharset));
-        }
         if (empty($this->template)) {
             $confErrMsgs[] = $this->pi_getLL('no_template');
         }
