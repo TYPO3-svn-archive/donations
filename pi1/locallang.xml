@@ -24,6 +24,25 @@
 			<label index="transaction_settings_failed">ERROR: Setting details of transaction failed.</label>
 			<label index="no_javascript_message">JavaScript is not activated, the "Back" button of the form will not work. Please use the Back button of your browser.</label>
 		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="no_template">Kein Template gefunden!</label>
+			<label index="configuration_error">Konfigurationsfehler</label>
+			<label index="donation_error1">Bitte alle benötigten Felder eintragen!</label>
+			<label index="donation_error2">Spendenbetrag muss mehr als null sein!</label>
+			<label index="donation_error3">Spendenbetrag ist geringer als der Mindestbetrag!</label>
+			<label index="donation_error4">Spendenbetrag ist höher als der Höchstbetrag!</label>
+			<label index="continue">weiter »</label>
+			<label index="payment_methods_error">Keine Zahlungsmöglichkeiten verfügbar!</label>
+			<label index="back_list_link">« Zurück zu den Projekten</label>
+			<label index="back">« zurück</label>
+			<label index="confirm">bestätigen »</label>
+			<label index="donate_link">Spenden</label>
+			<label index="details_link">Details</label>
+			<label index="payment_declined">Zahlung abgelehnt!</label>
+			<label index="transaction_init_failed">FEHLER: Konnte Transaktion nicht initialisieren.</label>
+			<label index="transaction_settings_failed">FEHLER: Details für die Transaktion konnten nicht gesetzt werden.</label>
+			<label index="no_javascript_message">JavaScript ist nicht aktiviert. Der Zurück Button dieses Formulars wird nicht funktionieren. Bitte den Zurück Button des Browser verwenden.</label>
+		</languageKey>
 		<languageKey index="fr" type="array">
 			<label index="no_template">Aucun modèle défini!</label>
 			<label index="configuration_error">Erreur de configuration</label>
