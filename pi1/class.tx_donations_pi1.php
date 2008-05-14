@@ -39,19 +39,19 @@ require_once(t3lib_extMgm::extPath('paymentlib').'lib/class.tx_paymentlib_provid
  * @subpackage	tx_donations
  */
 class tx_donations_pi1 extends tslib_pibase {
-    var $prefixId = 'tx_donations';		// Same as class name
-    var $scriptRelPath = 'pi1/class.tx_donations_pi1.php';	// Path to this script relative to the extension dir.
-    var $extKey = 'donations';	// The extension key.
-    var $template = '';
-
-    /**
-     * The main method of the plugin which acts as a controller, dispatching to other methods
-     * depending on the values of (or absence of) piVars
-     *
-     * @param	string		$content: The PlugIn content
-     * @param	array		$conf: The PlugIn configuration
-     * @return	The content that is displayed on the website
-     */
+	var $prefixId = 'tx_donations';		// Same as class name
+	var $scriptRelPath = 'pi1/class.tx_donations_pi1.php';	// Path to this script relative to the extension dir.
+	var $extKey = 'donations';	// The extension key.
+	var $template = '';
+	
+	/**
+	 * The main method of the plugin which acts as a controller, dispatching to other methods
+	 * depending on the values of (or absence of) piVars
+	 *
+	 * @param	string		$content: The PlugIn content
+	 * @param	array		$conf: The PlugIn configuration
+	 * @return	The content that is displayed on the website
+	 */
 	function main($content,$conf) {
 		$this->conf = $conf;
 		$this->pi_setPiVarDefaults();
@@ -117,7 +117,7 @@ class tx_donations_pi1 extends tslib_pibase {
 			$items = array();
 			$subpart = $this->cObj->getSubpart($this->template, '###LISTVIEW_ITEM###');
 
-			$whereClause = 'paid < amount';
+			$whereClause = '(paid < amount OR amount = 0)';
 			if (!empty($this->cObj->data['pages'])) {
 				$pages = explode(',',$this->cObj->data['pages']);
 				$whereClause .= " AND pid = '".$pages[0]."'";
@@ -187,48 +187,48 @@ class tx_donations_pi1 extends tslib_pibase {
 	 * @return The content to be displayed
 	 */
 	function donateView($uid) {
-		// Reset session vars
+			// Reset session vars
 		$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_donations_payment_reference', false);
 		$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_donations_payment_piVars', array());
 
 		$markers = array();
 		$subpart = $this->cObj->getSubpart($this->template, '###DONATEVIEW###');
 
-// Get project info, if a project is defined
-
+			// Get project info, if a project is defined
 		$row = $this->getProject($uid);
 		$currency = $this->getCurrency($row['currency']);
 
-// Get the list of payment methods
+			// Get the list of payment methods
+		$providerFactoryObj = tx_paymentlib_providerfactory::getInstance();
+		if ($providerObjectsArr = $providerFactoryObj->getProviderObjects()) {
+			$paymethods = t3lib_div::trimExplode(',', $this->conf['paymethods']);
+			$paymentMethodsArr = array();
+			foreach ($providerObjectsArr as $providerObj) {
+				$tmpArr = $providerObj->getAvailablePaymentMethods();
+				$keys = array_intersect(array_keys($tmpArr), $paymethods);
+				foreach ($keys as $key) {
+					$paymentMethodsArr[$key] = $tmpArr[$key];
+				}
+			}
 
-        $providerFactoryObj = tx_paymentlib_providerfactory::getInstance();
-        if ($providerObjectsArr = $providerFactoryObj->getProviderObjects()) {
-            $paymethods = t3lib_div::trimExplode(',', $this->conf['paymethods']);
-            $paymentMethodsArr = array();
-            foreach ($providerObjectsArr as $providerObj) {
-                $tmpArr = $providerObj->getAvailablePaymentMethods();
-                $keys = array_intersect(array_keys($tmpArr), $paymethods);
-                foreach ($keys as $key) {
-                    $paymentMethodsArr[$key] = $tmpArr[$key];
-                }
-            }
-
-// Assemble list of payment method options
-
+				// Assemble list of payment method options
 			$selectedPayment = $this->getPiVars('paymethod');
-            foreach ($paymentMethodsArr as $paymentMethodKey => $paymentMethodConf) {
-	            $paymentMethodConf['iconpath'] = str_replace('EXT:', '', $paymentMethodConf['iconpath']);
-	            $label = htmlspecialchars($GLOBALS['TSFE']->sL($paymentMethodConf['label']));
-	            $options .= '<div><input type="radio" name="tx_donations[paymethod]" id="'.$paymentMethodKey.'" value="'.$paymentMethodKey.'"';
-	            if (!empty($selectedPayment) && $paymentMethodKey == $selectedPayment) $options .= ' checked="checked"';
-	            $options .= ' /> ';
-	            $options .= '<label for="'.$paymentMethodKey.'">';
-	            if (!empty($paymentMethodConf['iconpath'])) $options .= '<img src="/typo3conf/ext/' . $paymentMethodConf['iconpath'] . '" alt="'.$label.'" /> ';
-	            $options .= $label.'</label></div>';
-	        }
+			foreach ($paymentMethodsArr as $paymentMethodKey => $paymentMethodConf) {
+				$paymentMethodConf['iconpath'] = str_replace('EXT:', '', $paymentMethodConf['iconpath']);
+				$label = htmlspecialchars($GLOBALS['TSFE']->sL($paymentMethodConf['label']));
+				$options .= '<div><input type="radio" name="tx_donations[paymethod]" id="'.$paymentMethodKey.'" value="'.$paymentMethodKey.'"';
+				if (!empty($selectedPayment) && $paymentMethodKey == $selectedPayment) {
+					$options .= ' checked="checked"';
+				}
+				$options .= ' /> ';
+				$options .= '<label for="'.$paymentMethodKey.'">';
+				if (!empty($paymentMethodConf['iconpath'])) {
+					$options .= '<img src="/typo3conf/ext/' . $paymentMethodConf['iconpath'] . '" alt="'.$label.'" /> ';
+				}
+				$options .= $label.'</label></div>';
+			}
 
-// Include JavaScript for checking form input
-
+				// Include JavaScript for checking form input
 			$GLOBALS['TSFE']->additionalHeaderData[$this->extKey] = '<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'pi1/validation.js"></script>';
 
 // If an error occurred, prepare error message
@@ -358,10 +358,12 @@ class tx_donations_pi1 extends tslib_pibase {
 			}
 			else {
 				if (!empty($uid)) {
-					if ($rawAmount < $row['min_payment']) {
+						// less than the minimum if a minimum is configured
+					if ($rawAmount < $row['min_payment'] && $row['min_payment'] > 0) {
 						$errorCode = 3;
 					}
-					elseif ($rawAmount > $row['amount'] - $row['paid']) {
+						// more than the maximum if a maximum is configured
+					elseif (($rawAmount > $row['amount'] - $row['paid']) && $row['amount'] > 0) {
 						$errorCode = 4;
 					}
 				}
