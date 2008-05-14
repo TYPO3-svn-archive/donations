@@ -606,22 +606,17 @@ class tx_donations_pi1 extends tslib_pibase {
 				$userMailObj->replyto_email = $this->conf['mail.']['senderMail'];
 				$userMailObj->replyto_name = $this->conf['mail.']['senderName'];
 				$userMailObj->returnPath = $this->conf['mail.']['senderMail'];
-				$userMailObj->setPlain($mailText); 
-				$userMailObj->send($this->getPiVars('email'));	
+				$userMailObj->setPlain($mailText);
+				$mailto = $this->getPiVars('email');
+					// Prevent e-mail injection (code taken from th_mailformplus
+				if (strstr($mailto, '@') && !eregi("\r",$mailto) && !eregi("\n",$mailto)) {
+					$userMailObj->send($mailto);	
+				}
 			}
 		}
 
-/*
-TODO
-Snippet from th_mailformplus
-Check out rules and see what to apply
+//TODO: Check th_mailformplus to see if same check applies to subject or if it's different
 
-					# since 18.10.2005: prevent mail injection (reported by Joerg Schoppet - thx!)
-					# subject and email_header are checked for mail injection as well before
-					if (strstr($mailto, '@') && !eregi("\r",$mailto) && !eregi("\n",$mailto)) {
-						$emailObj->send($mailto);	
-					}
- */
 		return $this->cObj->substituteMarkerArray($subpart, $markers);
 	}
 
