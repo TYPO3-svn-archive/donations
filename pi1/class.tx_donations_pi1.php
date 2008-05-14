@@ -21,7 +21,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  *
- *  $Id: class.tx_donations_pi1.php 3484 2007-09-12 07:31:55Z fsuter $
+ *  $Id$
  ***************************************************************/
 
 require_once(PATH_tslib.'class.tslib_pibase.php');
@@ -566,7 +566,7 @@ class tx_donations_pi1 extends tslib_pibase {
 
 // Prepare markers for confirmation mails, if necessary
 
-		if (!empty($this->conf['mail.']['sendToAdmin']) && !empty($this->conf['mail.']['sendToUser'])) {
+		if (!empty($this->conf['mail.']['sendToAdmin']) || !empty($this->conf['mail.']['sendToUser'])) {
 			require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 			$mailMarkers = $markers;
 			$mailMarkers['###PROJECT_TITLE###'] = (empty($uid)) ? '-' : $row['title'];

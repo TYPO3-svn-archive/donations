@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: tca.php 3449 2007-08-13 20:43:37Z fsuter $
+ * $Id$
  */
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 

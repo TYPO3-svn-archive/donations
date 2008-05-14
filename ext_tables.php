@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: ext_tables.php 3432 2007-07-29 18:20:05Z fsuter $
+ * $Id$
  */
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
