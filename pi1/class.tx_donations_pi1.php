@@ -42,7 +42,6 @@ class tx_donations_pi1 extends tslib_pibase {
     var $prefixId = 'tx_donations';		// Same as class name
     var $scriptRelPath = 'pi1/class.tx_donations_pi1.php';	// Path to this script relative to the extension dir.
     var $extKey = 'donations';	// The extension key.
-    var $localconf;
     var $template = '';
 
     /**
@@ -54,7 +53,7 @@ class tx_donations_pi1 extends tslib_pibase {
      * @return	The content that is displayed on the website
      */
 	function main($content,$conf) {
-		$this->localconf = $conf;
+		$this->conf = $conf;
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
 		$this->pi_USER_INT_obj = 1; // Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
@@ -63,7 +62,7 @@ class tx_donations_pi1 extends tslib_pibase {
 		if ($errors = $this->init()) {
 			$error = '<p>EXT: '.$this->extKey.' - '.$this->pi_getLL('configuration_error').':</p>';
 			$error .= '<ul><li>' . implode('</li><li>', $errors) . '</li></ul>';
-			if (!empty($this->localconf['errorWrap.'])) $error = $this->cObj->stdWrap($error,$this->localconf['errorWrap.']);
+			if (!empty($this->conf['errorWrap.'])) $error = $this->cObj->stdWrap($error,$this->conf['errorWrap.']);
 			$content = $error;
 		}
 		else {
@@ -82,7 +81,7 @@ class tx_donations_pi1 extends tslib_pibase {
 					$content = $this->donateView($projectUid);
 					break;
 				default:
-					if ($this->localconf['disableProjects'] == 1) {
+					if ($this->conf['disableProjects'] == 1) {
 						$content = $this->donateView($projectUid);
 					}
 					else {
@@ -95,8 +94,8 @@ class tx_donations_pi1 extends tslib_pibase {
 
 // Wrap the whole result, with baseWrap if defined, else with standard pi_wrapInBaseClass() call
 
-		if (isset($this->localconf['baseWrap.'])) {
-			return $this->cObj->stdWrap($content,$this->localconf['baseWrap.']);
+		if (isset($this->conf['baseWrap.'])) {
+			return $this->cObj->stdWrap($content,$this->conf['baseWrap.']);
 		}
 		else {
 			return $this->pi_wrapInBaseClass($content);
@@ -110,7 +109,7 @@ class tx_donations_pi1 extends tslib_pibase {
 	 * @return The content to be displayed
 	 */
 	function listView() {
-		if ($this->localconf['disableProjects'] == 1) { // This shouldn't happen, but better make sure
+		if ($this->conf['disableProjects'] == 1) { // This shouldn't happen, but better make sure
 			return $this->donateView(0);
 		}
 		else {
@@ -154,7 +153,7 @@ class tx_donations_pi1 extends tslib_pibase {
 	 */
 	function singleView($uid) {
 		if (empty($uid)) { // Display something else if the project's uid is empty (this shouldn't happen really)
-			if ($this->localconf['disableProjects'] == 1) { // If we're not using projects, display the donate form
+			if ($this->conf['disableProjects'] == 1) { // If we're not using projects, display the donate form
 				return $this->donateView(0);
 			}
 			else { // Go back to projects list view
@@ -204,7 +203,7 @@ class tx_donations_pi1 extends tslib_pibase {
 
         $providerFactoryObj = tx_paymentlib_providerfactory::getInstance();
         if ($providerObjectsArr = $providerFactoryObj->getProviderObjects()) {
-            $paymethods = t3lib_div::trimExplode(',', $this->localconf['paymethods']);
+            $paymethods = t3lib_div::trimExplode(',', $this->conf['paymethods']);
             $paymentMethodsArr = array();
             foreach ($providerObjectsArr as $providerObj) {
                 $tmpArr = $providerObj->getAvailablePaymentMethods();
@@ -236,7 +235,7 @@ class tx_donations_pi1 extends tslib_pibase {
 
 			if (!empty($this->piVars['error'])) {
 				$errorMessage = $this->pi_getLL('donation_error'.($this->piVars['error']));
-				$markers['###ERROR_MESSAGE###'] = $this->cObj->stdWrap($errorMessage,$this->localconf['errorWrap.']);
+				$markers['###ERROR_MESSAGE###'] = $this->cObj->stdWrap($errorMessage,$this->conf['errorWrap.']);
 			}
 			else {
 				$markers['###ERROR_MESSAGE###'] = '';
@@ -245,13 +244,13 @@ class tx_donations_pi1 extends tslib_pibase {
 // Display donation form
 
 			$markers['###FORM_URL###'] = $this->pi_getPageLink($GLOBALS['TSFE']->id);
-			$markers['###FORM_NAME###'] = $this->localconf['formName'];
+			$markers['###FORM_NAME###'] = $this->conf['formName'];
 			$markers['###PAYMETHODS###'] = $options;
-			if (empty($this->localconf['donateView.']['projectTitle.'])) {
+			if (empty($this->conf['donateView.']['projectTitle.'])) {
 				$markers['###PROJECT_TITLE###'] = '';
 			}
 			else {
-				$markers['###PROJECT_TITLE###'] = $this->cObj->stdWrap('',$this->localconf['donateView.']['projectTitle.']);
+				$markers['###PROJECT_TITLE###'] = $this->cObj->stdWrap('',$this->conf['donateView.']['projectTitle.']);
 			}
 			if (empty($uid)) {
 				$markers['###AMOUNT_MIN###'] = '';
@@ -259,18 +258,18 @@ class tx_donations_pi1 extends tslib_pibase {
 			}
 			else {
 				$formattedValue = $this->moneylibObj->format(intval($row['min_payment'] * $currency['cu_sub_divisor']), $currency['cu_iso_3'], true);
-				if (empty($this->localconf['donateView.']['amountMin.'])) {
+				if (empty($this->conf['donateView.']['amountMin.'])) {
 					$markers['###AMOUNT_MIN###'] = $formattedValue;
 				}
 				else {
-					$markers['###AMOUNT_MIN###'] = $this->cObj->stdWrap($formattedValue,$this->localconf['donateView.']['amountMin.']);
+					$markers['###AMOUNT_MIN###'] = $this->cObj->stdWrap($formattedValue,$this->conf['donateView.']['amountMin.']);
 				}
 				$formattedValue = $this->moneylibObj->format(intval(($row['amount'] - $row['paid']) * $currency['cu_sub_divisor']), $currency['cu_iso_3'], true);
-				if (empty($this->localconf['donateView.']['amountMax.'])) {
+				if (empty($this->conf['donateView.']['amountMax.'])) {
 					$markers['###AMOUNT_MAX###'] = $formattedValue;
 				}
 				else {
-					$markers['###AMOUNT_MAX###'] = $this->cObj->stdWrap($formattedValue,$this->localconf['donateView.']['amountMax.']);
+					$markers['###AMOUNT_MAX###'] = $this->cObj->stdWrap($formattedValue,$this->conf['donateView.']['amountMax.']);
 				}
 			}
 			$amount = $this->getPiVars('amount');
@@ -306,7 +305,7 @@ class tx_donations_pi1 extends tslib_pibase {
 			return $this->cObj->substituteMarkerArray($subpart, $markers);
 		}
 		else {
-			return $this->cObj->stdWrap($this->pi_getLL('payment_methods_error'),$this->localconf['errorWrap.']);
+			return $this->cObj->stdWrap($this->pi_getLL('payment_methods_error'),$this->conf['errorWrap.']);
 		}
 	}
 
@@ -442,24 +441,24 @@ class tx_donations_pi1 extends tslib_pibase {
 		}
 
 		if (!empty($message)) {
-			$markers['###ERROR_MESSAGE###'] = $this->cObj->stdWrap($message,$this->localconf['errorWrap.']);
+			$markers['###ERROR_MESSAGE###'] = $this->cObj->stdWrap($message,$this->conf['errorWrap.']);
 		}
 		else {
 			$markers['###ERROR_MESSAGE###'] = '';
 		}
 		$markers['###FORM_URL###'] = $providerObj->transaction_formGetActionURI();
-		$markers['###FORM_NAME###'] = $this->localconf['formName'];
+		$markers['###FORM_NAME###'] = $this->conf['formName'];
 		$markers['###FORM_FORM_PARAMS###'] = $providerObj->transaction_formGetFormParms();
 		$backURL = $this->pi_getPageLink($GLOBALS['TSFE']->id, '', array('tx_donations[view]' => 'donate'));
 //		$markers['###BUTTONS###'] = '<input type="submit" id="backButton" name="tx_donations[donate]" value="'.$this->pi_getLL('back').'" onclick="this.form.action=\''.$backURL.'\'" disabled="true" />';
 		$markers['###BUTTONS###'] = '<input type="submit" id="backButton" name="back" value="'.$this->pi_getLL('back').'" onclick="this.form.action=\''.$backURL.'\'" disabled="true" />';
 		$markers['###BUTTONS###'] .= '&nbsp;<input type="submit" name="submit" value="'.$this->pi_getLL('confirm').'" '.($providerObj->transaction_formGetSubmitParms()).' />';
 		$markers['###BUTTONS###'] .= '<script>document.forms["donateForm"].backButton.disabled=false;</script><noscript><p>'.$this->pi_getLL('no_javascript_message').'</p></noscript>';
-		if (empty($this->localconf['confirmView.']['projectTitle.'])) {
+		if (empty($this->conf['confirmView.']['projectTitle.'])) {
 			$markers['###PROJECT_TITLE###'] = '';
 		}
 		else {
-			$markers['###PROJECT_TITLE###'] = $this->cObj->stdWrap('',$this->localconf['confirmView.']['projectTitle.']);
+			$markers['###PROJECT_TITLE###'] = $this->cObj->stdWrap('',$this->conf['confirmView.']['projectTitle.']);
 		}
 
 // Display input data for confirmation
@@ -523,7 +522,7 @@ class tx_donations_pi1 extends tslib_pibase {
 			$time = time();
 			$fields['tstamp'] = $time;
 			$fields['crdate'] = $time;
-			$fields['pid'] = $this->localconf['depositsPID'];
+			$fields['pid'] = $this->conf['depositsPID'];
 			$fields['cruser_id'] = '';
 			$fields['project_uid'] = intval($uid);
 			$fields['cust_company'] = $this->getPiVars('company');
@@ -544,13 +543,13 @@ class tx_donations_pi1 extends tslib_pibase {
 			}
 		}
 
-		if (empty($this->localconf['receiptView.']['projectTitle.'])) {
+		if (empty($this->conf['receiptView.']['projectTitle.'])) {
 			$markers['###PROJECT_TITLE###'] = '';
 		}
 		else {
-			$markers['###PROJECT_TITLE###'] = $this->cObj->stdWrap('',$this->localconf['receiptView.']['projectTitle.']);
+			$markers['###PROJECT_TITLE###'] = $this->cObj->stdWrap('',$this->conf['receiptView.']['projectTitle.']);
 		}
-		$markers['###MESSAGE###'] = $this->cObj->cObjGetSingle($this->localconf['thankMessage'], $this->localconf['thankMessage.'], 'thankMessage');
+		$markers['###MESSAGE###'] = $this->cObj->cObjGetSingle($this->conf['thankMessage'], $this->conf['thankMessage.'], 'thankMessage');
 
 		$markers['###PAYMENT_REFERENCE###'] = $paymentReference;
 		$markers['###PAYMETHOD###'] = $GLOBALS['TSFE']->sL($paymethodLabel);
@@ -567,44 +566,44 @@ class tx_donations_pi1 extends tslib_pibase {
 
 // Prepare markers for confirmation mails, if necessary
 
-		if (!empty($this->localconf['mail.']['sendToAdmin']) && !empty($this->localconf['mail.']['sendToUser'])) {
+		if (!empty($this->conf['mail.']['sendToAdmin']) && !empty($this->conf['mail.']['sendToUser'])) {
 			require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 			$mailMarkers = $markers;
 			$mailMarkers['###PROJECT_TITLE###'] = (empty($uid)) ? '-' : $row['title'];
-			$mailMarkers['###DATE_VAL###'] = $this->cObj->stdWrap(time(),$this->localconf['mail.']['dateWrap.']);
+			$mailMarkers['###DATE_VAL###'] = $this->cObj->stdWrap(time(),$this->conf['mail.']['dateWrap.']);
 
 // Send mail to admin
 
-			if (!empty($this->localconf['mail.']['sendToAdmin'])) {
-				$mailMarkers['###MESSAGE###'] = $this->localconf['mail.']['adminMessage'];
+			if (!empty($this->conf['mail.']['sendToAdmin'])) {
+				$mailMarkers['###MESSAGE###'] = $this->conf['mail.']['adminMessage'];
 				$mailSubpart = $this->cObj->getSubpart($this->template, '###ADMINMAIL###');
 				$mailText = $this->cObj->substituteMarkerArray($mailSubpart, $mailMarkers);
 				$adminMailObj = t3lib_div::makeInstance('t3lib_htmlmail');
 				$adminMailObj->start();
-				$adminMailObj->subject = $this->localconf['mail.']['adminSubject'];
-				$adminMailObj->from_email = $this->localconf['mail.']['senderMail'];
-				$adminMailObj->from_name = $this->localconf['mail.']['senderName'];
-				$adminMailObj->replyto_email = $this->localconf['mail.']['senderMail'];
-				$adminMailObj->replyto_name = $this->localconf['mail.']['senderName'];
-				$adminMailObj->returnPath = $this->localconf['mail.']['senderMail'];
+				$adminMailObj->subject = $this->conf['mail.']['adminSubject'];
+				$adminMailObj->from_email = $this->conf['mail.']['senderMail'];
+				$adminMailObj->from_name = $this->conf['mail.']['senderName'];
+				$adminMailObj->replyto_email = $this->conf['mail.']['senderMail'];
+				$adminMailObj->replyto_name = $this->conf['mail.']['senderName'];
+				$adminMailObj->returnPath = $this->conf['mail.']['senderMail'];
 				$adminMailObj->setPlain($mailText); 
-				$adminMailObj->send($this->localconf['mail.']['adminMail']);	
+				$adminMailObj->send($this->conf['mail.']['adminMail']);	
 			}
 
 // Send mail to user
 
-			if (!empty($this->localconf['mail.']['sendToUser'])) {
-				$mailMarkers['###MESSAGE###'] = $this->localconf['mail.']['userMessage'];
+			if (!empty($this->conf['mail.']['sendToUser'])) {
+				$mailMarkers['###MESSAGE###'] = $this->conf['mail.']['userMessage'];
 				$mailSubpart = $this->cObj->getSubpart($this->template, '###USERMAIL###');
 				$mailText = $this->cObj->substituteMarkerArray($mailSubpart, $mailMarkers);
 				$userMailObj = t3lib_div::makeInstance('t3lib_htmlmail');
 				$userMailObj->start();
-				$userMailObj->subject = $this->localconf['mail.']['userSubject'];
-				$userMailObj->from_email = $this->localconf['mail.']['senderMail'];
-				$userMailObj->from_name = $this->localconf['mail.']['senderName'];
-				$userMailObj->replyto_email = $this->localconf['mail.']['senderMail'];
-				$userMailObj->replyto_name = $this->localconf['mail.']['senderName'];
-				$userMailObj->returnPath = $this->localconf['mail.']['senderMail'];
+				$userMailObj->subject = $this->conf['mail.']['userSubject'];
+				$userMailObj->from_email = $this->conf['mail.']['senderMail'];
+				$userMailObj->from_name = $this->conf['mail.']['senderName'];
+				$userMailObj->replyto_email = $this->conf['mail.']['senderMail'];
+				$userMailObj->replyto_name = $this->conf['mail.']['senderName'];
+				$userMailObj->returnPath = $this->conf['mail.']['senderMail'];
 				$userMailObj->setPlain($mailText); 
 				$userMailObj->send($this->getPiVars('email'));	
 			}
@@ -660,8 +659,8 @@ Check out rules and see what to apply
 	function getCurrency($uid) {
 		$currency = array();
 		if (empty($uid)) { // If no uid is available try to get the default currency (as defined in TS setup)
-			if (!empty($this->localconf['defaultCurrency'])) {
-				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*','static_currencies', "cu_iso_3 = '".$this->localconf['defaultCurrency']."'");
+			if (!empty($this->conf['defaultCurrency'])) {
+				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*','static_currencies', "cu_iso_3 = '".$this->conf['defaultCurrency']."'");
 				if ($result) $currency = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 			}
 		}
@@ -700,7 +699,7 @@ Check out rules and see what to apply
         $confErrMsgs = array();
 
         // Get template
-        $this->template = trim($this->cObj->fileResource($this->localconf['template']));
+        $this->template = trim($this->cObj->fileResource($this->conf['template']));
         if ($GLOBALS['TSFE']->renderCharset == 'utf-8' && !$this->is_utf8($this->template)) {
             $localCharset = !empty($GLOBALS['TSFE']->csConvObj->charSetArray[$this->LLkey]) ?  $GLOBALS['TSFE']->csConvObj->charSetArray[$this->LLkey] : 'iso-8859-1';
             $this->template = trim($GLOBALS['TSFE']->csConvObj->utf8_encode($this->template, $localCharset));
