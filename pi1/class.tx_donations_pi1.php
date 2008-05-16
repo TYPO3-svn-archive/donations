@@ -39,10 +39,10 @@ require_once(t3lib_extMgm::extPath('paymentlib').'lib/class.tx_paymentlib_provid
  * @subpackage	tx_donations
  */
 class tx_donations_pi1 extends tslib_pibase {
-	var $prefixId = 'tx_donations';		// Same as class name
-	var $scriptRelPath = 'pi1/class.tx_donations_pi1.php';	// Path to this script relative to the extension dir.
-	var $extKey = 'donations';	// The extension key.
-	var $template = '';
+	public $prefixId = 'tx_donations';		// Same as class name
+	public $scriptRelPath = 'pi1/class.tx_donations_pi1.php';	// Path to this script relative to the extension dir.
+	public $extKey = 'donations';	// The extension key.
+	protected $template = '';
 	
 	/**
 	 * The main method of the plugin which acts as a controller, dispatching to other methods
@@ -52,14 +52,8 @@ class tx_donations_pi1 extends tslib_pibase {
 	 * @param	array		$conf: The PlugIn configuration
 	 * @return	The content that is displayed on the website
 	 */
-	function main($content,$conf) {
-		$this->conf = $conf;
-		$this->pi_setPiVarDefaults();
-		$this->pi_loadLL();
-		$this->pi_USER_INT_obj = 1; // Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
-		$this->moneylibObj = t3lib_div::makeInstance('tx_moneylib');
-		
-		if ($errors = $this->init()) {
+	public function main($content,$conf) {		
+		if ($errors = $this->init($conf)) {
 			$error = '<p>EXT: '.$this->extKey.' - '.$this->pi_getLL('configuration_error').':</p>';
 			$error .= '<ul><li>' . implode('</li><li>', $errors) . '</li></ul>';
 			if (!empty($this->conf['errorWrap.'])) $error = $this->cObj->stdWrap($error,$this->conf['errorWrap.']);
@@ -108,7 +102,7 @@ class tx_donations_pi1 extends tslib_pibase {
 	 *
 	 * @return The content to be displayed
 	 */
-	function listView() {
+	protected function listView() {
 		if ($this->conf['disableProjects'] == 1) { // This shouldn't happen, but better make sure
 			return $this->donateView(0);
 		}
@@ -151,7 +145,7 @@ class tx_donations_pi1 extends tslib_pibase {
 	 * @param  integer	uid of the project to display
 	 * @return The content to be displayed
 	 */
-	function singleView($uid) {
+	protected function singleView($uid) {
 		if (empty($uid)) { // Display something else if the project's uid is empty (this shouldn't happen really)
 			if ($this->conf['disableProjects'] == 1) { // If we're not using projects, display the donate form
 				return $this->donateView(0);
@@ -186,7 +180,7 @@ class tx_donations_pi1 extends tslib_pibase {
 	 * @param integer	uid of the selected project (may be empty if projects are not used)
 	 * @return The content to be displayed
 	 */
-	function donateView($uid) {
+	protected function donateView($uid) {
 			// Reset session vars
 		$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_donations_payment_reference', false);
 		$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_donations_payment_piVars', array());
@@ -280,20 +274,13 @@ class tx_donations_pi1 extends tslib_pibase {
 			if (isset($row['uid'])) {
 				$markers['###HIDDEN_FIELDS###'] .= '<input type="hidden" name="tx_donations[project_uid]" value="'.$row['uid'].'" />';
 			}
-			$company = $this->getPiVars('company');
-			$name = $this->getPiVars('name');
-			$addr = $this->getPiVars('addr');
-			$zip = $this->getPiVars('zip');
-			$city = $this->getPiVars('city');
-			$country = $this->getPiVars('country');
-			$email = $this->getPiVars('email');
-			$markers['###COMPANY_VAL###'] = (empty($company)) ? '' : $company;
-			$markers['###NAME_VAL###'] = (empty($name)) ? '' : $name;
-			$markers['###ADDR_VAL###'] = (empty($addr)) ? '' : $addr;
-			$markers['###ZIP_VAL###'] = (empty($zip)) ? '' : $zip;
-			$markers['###CITY_VAL###'] = (empty($city)) ? '' : $city;
-			$markers['###COUNTRY_VAL###'] = (empty($country)) ? '' : $country;
-			$markers['###EMAIL_VAL###'] = (empty($email)) ? '' : $email;
+			$markers['###COMPANY_VAL###'] = $company = $this->getPiVars('company', true);
+			$markers['###NAME_VAL###'] = $name = $this->getPiVars('name', true);
+			$markers['###ADDR_VAL###'] = $addr = $this->getPiVars('addr', true);
+			$markers['###ZIP_VAL###'] = $zip = $this->getPiVars('zip', true);
+			$markers['###CITY_VAL###'] = $city = $this->getPiVars('city', true);
+			$markers['###COUNTRY_VAL###'] = $country = $this->getPiVars('country', true);
+			$markers['###EMAIL_VAL###'] = $email = $this->getPiVars('email', true);
 //			$markers['###BUTTONS###'] = '<input type="submit" name="tx_donations[confirm]" value="'.($this->pi_getLL('continue')).'" />';
 			$markers['###BUTTONS###'] = '<input type="submit" name="submit" value="'.($this->pi_getLL('continue')).'" />';
 			if (empty($uid)) {
@@ -315,7 +302,7 @@ class tx_donations_pi1 extends tslib_pibase {
 	 * @param integer	uid of the project to donate to
 	 * @return The content to be displayed
 	 */
-	function confirmView($uid) {
+	protected function confirmView($uid) {
 
 // A reference must be defined so that if the payment has alreday been processed, it cannot be processed a second time
 
@@ -471,13 +458,13 @@ class tx_donations_pi1 extends tslib_pibase {
 
 		$markers['###PAYMENT_DETAILS###'] = implode('', $visibleFields);
 
-		$markers['###COMPANY_VAL###'] = $this->getPiVars('company');
-		$markers['###NAME_VAL###'] = $this->getPiVars('name');
-		$markers['###ADDR_VAL###'] = $this->getPiVars('addr');
-		$markers['###ZIP_VAL###'] = $this->getPiVars('zip');
-		$markers['###CITY_VAL###'] = $this->getPiVars('city');
-		$markers['###COUNTRY_VAL###'] = $this->getPiVars('country');
-		$markers['###EMAIL_VAL###'] = $this->getPiVars('email');
+		$markers['###COMPANY_VAL###'] = $this->getPiVars('company', true);
+		$markers['###NAME_VAL###'] = $this->getPiVars('name', true);
+		$markers['###ADDR_VAL###'] = $this->getPiVars('addr', true);
+		$markers['###ZIP_VAL###'] = $this->getPiVars('zip', true);
+		$markers['###CITY_VAL###'] = $this->getPiVars('city', true);
+		$markers['###COUNTRY_VAL###'] = $this->getPiVars('country', true);
+		$markers['###EMAIL_VAL###'] = $this->getPiVars('email', true);
 		$markers['###HIDDEN_FIELDS###'] = implode("\n", $hiddenFields);
 		return $this->cObj->substituteMarkerArray($subpart, $markers);
 	}
@@ -488,7 +475,7 @@ class tx_donations_pi1 extends tslib_pibase {
 	 * @param integer	uid of the project to donate to
 	 * @return The content to be displayed
 	 */
-	function receiptView($uid) {
+	protected function receiptView($uid) {
 		$paymentReference = $GLOBALS['TSFE']->fe_user->getKey('ses', 'tx_donations_payment_reference');
 
 		if (!$GLOBALS['TSFE']->fe_user->getKey('ses', 'tx_donations_payment_piVars')) {
@@ -622,12 +609,14 @@ class tx_donations_pi1 extends tslib_pibase {
 
 	/**
 	 * This method returns a piVar first making sure that it is defined and not false, not 0 and not an empty string
+	 * It can also call htmlspecialchars() on the piVar
 	 *
-	 * @param string	the name of the variable to fetch
-	 * @return The value of the variable or an empty string if empty
+	 * @param 	string		$name: the name of the variable to fetch
+	 * @param	boolean		$hsc: true to use htmlspecialchars() on the value
+	 * @return	mixed		The value of the variable or an empty string if empty
 	 */
-	function getPiVars($name) {
-		return !empty($this->piVars[$name]) ? $this->piVars[$name] : '';
+	protected function getPiVars($name, $hsc = false) {
+		return empty($this->piVars[$name]) ? '' : ($hsc ? htmlspecialchars($this->piVars[$name]): $this->piVars[$name]);
 	}
 
 	/**
@@ -636,7 +625,7 @@ class tx_donations_pi1 extends tslib_pibase {
 	 * @param integer	uid of the project
 	 * @return Associative array of the corresponding record (or empty array if record not found)
 	 */
-	function getProject($uid) {
+	protected function getProject($uid) {
 		if (empty($uid)) { // If no project is defined, initialise empty array
 			$row = array();
 		}
@@ -653,7 +642,7 @@ class tx_donations_pi1 extends tslib_pibase {
 	 * @param integer	uid of the currency
 	 * @return Associative array of the corresponding record (or empty array if record not found)
 	 */
-	function getCurrency($uid) {
+	protected function getCurrency($uid) {
 		$currency = array();
 		if (empty($uid)) { // If no uid is available try to get the default currency (as defined in TS setup)
 			if (!empty($this->conf['defaultCurrency'])) {
@@ -668,22 +657,52 @@ class tx_donations_pi1 extends tslib_pibase {
 	}
 
 	/**
-     * This method initialises the template and the localisation stuff
+     * This method performs various initialisations
+     *
+     * @param		array		$conf: TypoScript configuration
      *
      * @return		mixed		Returns an array with error messages if errors detected, otherwise boolean false
      */
-    function init() {
+    protected function init($conf) {
+    		// General initialisation
+		$this->conf = $conf;
+		$this->pi_setPiVarDefaults();
+		$this->pi_loadLL();
+		$this->pi_USER_INT_obj = 1; // Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
+		$confErrMsgs = array();
 
-        $confErrMsgs = array();
+			// Clean up all the piVars for possible XSS code
+		$this->piVars = $this->cleanUpValues($this->piVars);
 
-        // Get template
-        $this->template = trim($this->cObj->fileResource($this->conf['template']));
-        if (empty($this->template)) {
-            $confErrMsgs[] = $this->pi_getLL('no_template');
-        }
+			// Get an instance of the moneylib object
+		$this->moneylibObj = t3lib_div::makeInstance('tx_moneylib');
+
+	        // Get template and issue error if empty
+		$this->template = trim($this->cObj->fileResource($this->conf['template']));
+		if (empty($this->template)) {
+			$confErrMsgs[] = $this->pi_getLL('no_template');
+		}
          
-        return count($confErrMsgs) >= 0 ? $confErrMsgs : false;
-    }
+		return count($confErrMsgs) >= 0 ? $confErrMsgs : false;
+	}
+
+	/**
+	 * This method recursively cleans up the an array of from any HTML tags that may have been planted there
+	 *
+	 * @param		array	$allValues: key-value pairs of values to clean up
+	 * @return		void
+	 */
+	protected function cleanUpValues($allValues) {
+		foreach ($allValues as $key => $value) {
+			if (is_array($value)) {
+				$allValues[$key] = $this->cleanUpValues($value);
+			}
+			else {
+				$allValues[$key] = strip_tags($value);
+			}
+		}
+		return $allValues;
+	}
 }
 
 
