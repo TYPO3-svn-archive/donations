@@ -131,11 +131,11 @@ class tx_donations_pi1 extends tslib_pibase {
 				$markers['###CURRENCY###'] = $currency['cu_iso_3'];
 				$markers['###DETAILS_LINK###'] = $this->pi_linkTP($this->pi_getLL('details_link'), array('tx_donations[view]' => 'single', 'tx_donations[project_uid]' => $row['uid']));
 				$markers['###DONATE_LINK###'] = $this->pi_linkTP($this->pi_getLL('donate_link'), array('tx_donations[view]' => 'donate', 'tx_donations[project_uid]' => $row['uid']));
-				$items[] = $this->cObj->substituteMarkerArray($subpart, $markers);
+				$items[] = $this->substituteMarkerArray($subpart, $markers);
 			}
 
 			$subpart = $this->cObj->getSubpart($this->template, '###LISTVIEW###');
-			return $this->cObj->substituteMarkerArray($subpart, array('###ITEMS###' => implode('', $items)));
+			return $this->substituteMarkerArray($subpart, array('###ITEMS###' => implode('', $items)));
 		}
 	}
 
@@ -170,7 +170,7 @@ class tx_donations_pi1 extends tslib_pibase {
 			$markers['###CURRENCY###'] = $currency['cu_iso_3'];
 			$markers['###DONATE_LINK###'] = $this->pi_linkTP($this->pi_getLL('donate_link'), array('tx_donations[view]' => 'donate', 'tx_donations[project_uid]' => $row['uid']));
 			$markers['###BACK_LINK###'] = $this->pi_linkTP($this->pi_getLL('back_list_link'), array());
-			return $this->cObj->substituteMarkerArray($subpart, $markers);
+			return $this->substituteMarkerArray($subpart, $markers);
 		}
 	}
 
@@ -289,7 +289,7 @@ class tx_donations_pi1 extends tslib_pibase {
 			else {
 				$markers['###BACK_LINK###'] = $this->pi_linkTP($this->pi_getLL('back_list_link'), array());
 			}
-			return $this->cObj->substituteMarkerArray($subpart, $markers);
+			return $this->substituteMarkerArray($subpart, $markers);
 		}
 		else {
 			return $this->cObj->stdWrap($this->pi_getLL('payment_methods_error'),$this->conf['errorWrap.']);
@@ -466,7 +466,7 @@ class tx_donations_pi1 extends tslib_pibase {
 		$markers['###COUNTRY_VAL###'] = $this->getPiVars('country', true);
 		$markers['###EMAIL_VAL###'] = $this->getPiVars('email', true);
 		$markers['###HIDDEN_FIELDS###'] = implode("\n", $hiddenFields);
-		return $this->cObj->substituteMarkerArray($subpart, $markers);
+		return $this->substituteMarkerArray($subpart, $markers);
 	}
 
 	/**
@@ -566,7 +566,7 @@ class tx_donations_pi1 extends tslib_pibase {
 			if (!empty($this->conf['mail.']['sendToAdmin'])) {
 				$mailMarkers['###MESSAGE###'] = $this->conf['mail.']['adminMessage'];
 				$mailSubpart = $this->cObj->getSubpart($this->template, '###ADMINMAIL###');
-				$mailText = $this->cObj->substituteMarkerArray($mailSubpart, $mailMarkers);
+				$mailText = $this->substituteMarkerArray($mailSubpart, $mailMarkers);
 				$adminMailObj = t3lib_div::makeInstance('t3lib_htmlmail');
 				$adminMailObj->start();
 				$adminMailObj->subject = $this->conf['mail.']['adminSubject'];
@@ -584,7 +584,7 @@ class tx_donations_pi1 extends tslib_pibase {
 			if (!empty($this->conf['mail.']['sendToUser'])) {
 				$mailMarkers['###MESSAGE###'] = $this->conf['mail.']['userMessage'];
 				$mailSubpart = $this->cObj->getSubpart($this->template, '###USERMAIL###');
-				$mailText = $this->cObj->substituteMarkerArray($mailSubpart, $mailMarkers);
+				$mailText = $this->substituteMarkerArray($mailSubpart, $mailMarkers);
 				$userMailObj = t3lib_div::makeInstance('t3lib_htmlmail');
 				$userMailObj->start();
 				$userMailObj->subject = $this->conf['mail.']['userSubject'];
@@ -595,16 +595,14 @@ class tx_donations_pi1 extends tslib_pibase {
 				$userMailObj->returnPath = $this->conf['mail.']['senderMail'];
 				$userMailObj->setPlain($mailText);
 				$mailto = $this->getPiVars('email');
-					// Prevent e-mail injection (code taken from th_mailformplus
+					// Prevent e-mail injection (code taken from th_mailformplus)
 				if (strstr($mailto, '@') && !eregi("\r",$mailto) && !eregi("\n",$mailto)) {
 					$userMailObj->send($mailto);	
 				}
 			}
 		}
 
-//TODO: Check th_mailformplus to see if same check applies to subject or if it's different
-
-		return $this->cObj->substituteMarkerArray($subpart, $markers);
+		return $this->substituteMarkerArray($subpart, $markers);
 	}
 
 	/**
@@ -703,6 +701,29 @@ class tx_donations_pi1 extends tslib_pibase {
 		}
 		return $allValues;
 	}
+
+	/**
+	 * This method is a wrapper for tslib_cobj::substituteMarkerArray(), which has been replaced
+	 * by t3lib_parsehtml::substituteMarkerArray() as of TYPO3 4.2. It avoids repeating the version
+	 * compatibility test dozens of times in the class (tslib_cobj::substituteMarkerArray() still exists in 4.2,
+	 * but it's behavior is slightly different)
+	 *
+	 * @param	string		The content stream, typically HTML template content.
+	 * @param	array		The array of key/value pairs being marker/content values used in the substitution. For each element in this array the function will substitute a marker in the content stream with the content.
+	 * @param	string		A wrap value - [part 1] | [part 2] - for the markers before substitution
+	 * @param	boolean		If set, all marker string substitution is done with upper-case markers.
+	 *
+	 * @return	string		The processed output stream
+	 */
+	protected function substituteMarkerArray($content,$markerArray, $wrap, $uppercase) {
+		if (t3lib_div::compat_version('4.2')) { // Call the newer method, but force unreplaced markers to be deleted
+			return t3lib_parsehtml::substituteMarkerArray($content, $markerArray, $wrap, $uppercase, true);
+		}
+		else {
+			return $this->cObj->substituteMarkerArray($content, $markerArray);
+		}
+	}
+
 }
 
 
