@@ -121,21 +121,21 @@ class tx_donations_pi1 extends tslib_pibase {
 
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$currency = $this->getCurrency($row['currency']);
-				$markers['###TITLE###'] = $row['title'];
-				$markers['###SHORT_DESC###'] = $row['short_desc'];
+				$markers['TITLE'] = $row['title'];
+				$markers['SHORT_DESC'] = $row['short_desc'];
 				$imagePath = 'uploads/'.$this->prefixId.'/'.$row['logo'];
-				$markers['###LOGO###'] = $this->cObj->IMAGE(array('file' => $imagePath));
-				$markers['###AMOUNT_MIN###'] = $this->moneylibObj->format(intval($row['min_payment'] * $currency['cu_sub_divisor']), $currency['cu_iso_3'], false);
-				$markers['###AMOUNT_DONATED###'] = $this->moneylibObj->format(intval($row['paid'] * $currency['cu_sub_divisor']), $currency['cu_iso_3'], false);
-				$markers['###AMOUNT_NEEDED###'] = $this->moneylibObj->format(intval($row['amount'] * $currency['cu_sub_divisor']), $currency['cu_iso_3'], false);
-				$markers['###CURRENCY###'] = $currency['cu_iso_3'];
-				$markers['###DETAILS_LINK###'] = $this->pi_linkTP($this->pi_getLL('details_link'), array('tx_donations[view]' => 'single', 'tx_donations[project_uid]' => $row['uid']));
-				$markers['###DONATE_LINK###'] = $this->pi_linkTP($this->pi_getLL('donate_link'), array('tx_donations[view]' => 'donate', 'tx_donations[project_uid]' => $row['uid']));
-				$items[] = $this->substituteMarkerArray($subpart, $markers);
+				$markers['LOGO'] = $this->cObj->IMAGE(array('file' => $imagePath));
+				$markers['AMOUNT_MIN'] = $this->moneylibObj->format(intval($row['min_payment'] * $currency['cu_sub_divisor']), $currency['cu_iso_3'], false);
+				$markers['AMOUNT_DONATED'] = $this->moneylibObj->format(intval($row['paid'] * $currency['cu_sub_divisor']), $currency['cu_iso_3'], false);
+				$markers['AMOUNT_NEEDED'] = $this->moneylibObj->format(intval($row['amount'] * $currency['cu_sub_divisor']), $currency['cu_iso_3'], false);
+				$markers['CURRENCY'] = $currency['cu_iso_3'];
+				$markers['DETAILS_LINK'] = $this->pi_linkTP($this->pi_getLL('details_link'), array('tx_donations[view]' => 'single', 'tx_donations[project_uid]' => $row['uid']));
+				$markers['DONATE_LINK'] = $this->pi_linkTP($this->pi_getLL('donate_link'), array('tx_donations[view]' => 'donate', 'tx_donations[project_uid]' => $row['uid']));
+				$items[] = $this->substituteMarkerArray($subpart, $markers, '###|###');
 			}
 
 			$subpart = $this->cObj->getSubpart($this->template, '###LISTVIEW###');
-			return $this->substituteMarkerArray($subpart, array('###ITEMS###' => implode('', $items)));
+			return $this->substituteMarkerArray($subpart, array('ITEMS' => implode('', $items)), '###|###');
 		}
 	}
 
@@ -159,18 +159,18 @@ class tx_donations_pi1 extends tslib_pibase {
 			$subpart = $this->cObj->getSubpart($this->template, '###SINGLEVIEW###');
 			$row = $this->pi_getRecord('tx_donations_projects', $uid);
 			$currency = $this->getCurrency($row['currency']);
-			$markers['###TITLE###'] = $row['title'];
-			$markers['###SHORT_DESC###'] = $row['short_desc'];
-			$markers['###LONG_DESC###'] = $row['long_desc'];
+			$markers['TITLE'] = $row['title'];
+			$markers['SHORT_DESC'] = $row['short_desc'];
+			$markers['LONG_DESC'] = $row['long_desc'];
 			$imagePath = 'uploads/'.$this->prefixId.'/'.$row['logo'];
-			$markers['###LOGO###'] = $this->cObj->IMAGE(array('file' => $imagePath)); // $row['logo'];
-			$markers['###AMOUNT_MIN###'] = $this->moneylibObj->format(intval($row['min_payment'] * $currency['cu_sub_divisor']), $currency['cu_iso_3'], false);
-			$markers['###AMOUNT_DONATED###'] = $this->moneylibObj->format (intval($row['paid'] * $currency['cu_sub_divisor']), $currency['cu_iso_3'], false);
-			$markers['###AMOUNT_NEEDED###'] = $this->moneylibObj->format (intval($row['amount'] * $currency['cu_sub_divisor']), $currency['cu_iso_3'], false);
-			$markers['###CURRENCY###'] = $currency['cu_iso_3'];
-			$markers['###DONATE_LINK###'] = $this->pi_linkTP($this->pi_getLL('donate_link'), array('tx_donations[view]' => 'donate', 'tx_donations[project_uid]' => $row['uid']));
-			$markers['###BACK_LINK###'] = $this->pi_linkTP($this->pi_getLL('back_list_link'), array());
-			return $this->substituteMarkerArray($subpart, $markers);
+			$markers['LOGO'] = $this->cObj->IMAGE(array('file' => $imagePath)); // $row['logo'];
+			$markers['AMOUNT_MIN'] = $this->moneylibObj->format(intval($row['min_payment'] * $currency['cu_sub_divisor']), $currency['cu_iso_3'], false);
+			$markers['AMOUNT_DONATED'] = $this->moneylibObj->format (intval($row['paid'] * $currency['cu_sub_divisor']), $currency['cu_iso_3'], false);
+			$markers['AMOUNT_NEEDED'] = $this->moneylibObj->format (intval($row['amount'] * $currency['cu_sub_divisor']), $currency['cu_iso_3'], false);
+			$markers['CURRENCY'] = $currency['cu_iso_3'];
+			$markers['DONATE_LINK'] = $this->pi_linkTP($this->pi_getLL('donate_link'), array('tx_donations[view]' => 'donate', 'tx_donations[project_uid]' => $row['uid']));
+			$markers['BACK_LINK'] = $this->pi_linkTP($this->pi_getLL('back_list_link'), array());
+			return $this->substituteMarkerArray($subpart, $markers, '###|###');
 		}
 	}
 
@@ -229,67 +229,67 @@ class tx_donations_pi1 extends tslib_pibase {
 
 			if (!empty($this->piVars['error'])) {
 				$errorMessage = $this->pi_getLL('donation_error'.($this->piVars['error']));
-				$markers['###ERROR_MESSAGE###'] = $this->cObj->stdWrap($errorMessage,$this->conf['errorWrap.']);
+				$markers['ERROR_MESSAGE'] = $this->cObj->stdWrap($errorMessage,$this->conf['errorWrap.']);
 			}
 			else {
-				$markers['###ERROR_MESSAGE###'] = '';
+				$markers['ERROR_MESSAGE'] = '';
 			}
 
 // Display donation form
 
-			$markers['###FORM_URL###'] = $this->pi_getPageLink($GLOBALS['TSFE']->id);
-			$markers['###FORM_NAME###'] = $this->conf['formName'];
-			$markers['###PAYMETHODS###'] = $options;
+			$markers['FORM_URL'] = $this->pi_getPageLink($GLOBALS['TSFE']->id);
+			$markers['FORM_NAME'] = $this->conf['formName'];
+			$markers['PAYMETHODS'] = $options;
 			if (empty($this->conf['donateView.']['projectTitle.'])) {
-				$markers['###PROJECT_TITLE###'] = '';
+				$markers['PROJECT_TITLE'] = '';
 			}
 			else {
-				$markers['###PROJECT_TITLE###'] = $this->cObj->stdWrap('',$this->conf['donateView.']['projectTitle.']);
+				$markers['PROJECT_TITLE'] = $this->cObj->stdWrap('',$this->conf['donateView.']['projectTitle.']);
 			}
 			if (empty($uid)) {
-				$markers['###AMOUNT_MIN###'] = '';
-				$markers['###AMOUNT_MAX###'] = $currency['cu_iso_3'];
+				$markers['AMOUNT_MIN'] = '';
+				$markers['AMOUNT_MAX'] = $currency['cu_iso_3'];
 			}
 			else {
 				$formattedValue = $this->moneylibObj->format(intval($row['min_payment'] * $currency['cu_sub_divisor']), $currency['cu_iso_3'], true);
 				if (empty($this->conf['donateView.']['amountMin.'])) {
-					$markers['###AMOUNT_MIN###'] = $formattedValue;
+					$markers['AMOUNT_MIN'] = $formattedValue;
 				}
 				else {
-					$markers['###AMOUNT_MIN###'] = $this->cObj->stdWrap($formattedValue,$this->conf['donateView.']['amountMin.']);
+					$markers['AMOUNT_MIN'] = $this->cObj->stdWrap($formattedValue,$this->conf['donateView.']['amountMin.']);
 				}
 				$formattedValue = $this->moneylibObj->format(intval(($row['amount'] - $row['paid']) * $currency['cu_sub_divisor']), $currency['cu_iso_3'], true);
 				if (empty($this->conf['donateView.']['amountMax.'])) {
-					$markers['###AMOUNT_MAX###'] = $formattedValue;
+					$markers['AMOUNT_MAX'] = $formattedValue;
 				}
 				else {
-					$markers['###AMOUNT_MAX###'] = $this->cObj->stdWrap($formattedValue,$this->conf['donateView.']['amountMax.']);
+					$markers['AMOUNT_MAX'] = $this->cObj->stdWrap($formattedValue,$this->conf['donateView.']['amountMax.']);
 				}
 			}
 			$amount = $this->getPiVars('amount');
-			$markers['###AMOUNT_VAL###'] = (empty($amount)) ? '' : $amount;
-			if (isset($currency)) $markers['###CURRENCY###'] = $currency['cu_iso_3'];
+			$markers['AMOUNT_VAL'] = (empty($amount)) ? '' : $amount;
+			if (isset($currency)) $markers['CURRENCY'] = $currency['cu_iso_3'];
 			
-			$markers['###HIDDEN_FIELDS###'] = '<input type="hidden" name="tx_donations[view]" value="confirm" />';
+			$markers['HIDDEN_FIELDS'] = '<input type="hidden" name="tx_donations[view]" value="confirm" />';
 			if (isset($row['uid'])) {
-				$markers['###HIDDEN_FIELDS###'] .= '<input type="hidden" name="tx_donations[project_uid]" value="'.$row['uid'].'" />';
+				$markers['HIDDEN_FIELDS'] .= '<input type="hidden" name="tx_donations[project_uid]" value="'.$row['uid'].'" />';
 			}
-			$markers['###COMPANY_VAL###'] = $company = $this->getPiVars('company', true);
-			$markers['###NAME_VAL###'] = $name = $this->getPiVars('name', true);
-			$markers['###ADDR_VAL###'] = $addr = $this->getPiVars('addr', true);
-			$markers['###ZIP_VAL###'] = $zip = $this->getPiVars('zip', true);
-			$markers['###CITY_VAL###'] = $city = $this->getPiVars('city', true);
-			$markers['###COUNTRY_VAL###'] = $country = $this->getPiVars('country', true);
-			$markers['###EMAIL_VAL###'] = $email = $this->getPiVars('email', true);
-//			$markers['###BUTTONS###'] = '<input type="submit" name="tx_donations[confirm]" value="'.($this->pi_getLL('continue')).'" />';
-			$markers['###BUTTONS###'] = '<input type="submit" name="submit" value="'.($this->pi_getLL('continue')).'" />';
+			$markers['COMPANY_VAL'] = $company = $this->getPiVars('company', true);
+			$markers['NAME_VAL'] = $name = $this->getPiVars('name', true);
+			$markers['ADDR_VAL'] = $addr = $this->getPiVars('addr', true);
+			$markers['ZIP_VAL'] = $zip = $this->getPiVars('zip', true);
+			$markers['CITY_VAL'] = $city = $this->getPiVars('city', true);
+			$markers['COUNTRY_VAL'] = $country = $this->getPiVars('country', true);
+			$markers['EMAIL_VAL'] = $email = $this->getPiVars('email', true);
+//			$markers['BUTTONS'] = '<input type="submit" name="tx_donations[confirm]" value="'.($this->pi_getLL('continue')).'" />';
+			$markers['BUTTONS'] = '<input type="submit" name="submit" value="'.($this->pi_getLL('continue')).'" />';
 			if (empty($uid)) {
-				$markers['###BACK_LINK###'] = '';
+				$markers['BACK_LINK'] = '';
 			}
 			else {
-				$markers['###BACK_LINK###'] = $this->pi_linkTP($this->pi_getLL('back_list_link'), array());
+				$markers['BACK_LINK'] = $this->pi_linkTP($this->pi_getLL('back_list_link'), array());
 			}
-			return $this->substituteMarkerArray($subpart, $markers);
+			return $this->substituteMarkerArray($subpart, $markers, '###|###');
 		}
 		else {
 			return $this->cObj->stdWrap($this->pi_getLL('payment_methods_error'),$this->conf['errorWrap.']);
@@ -430,43 +430,43 @@ class tx_donations_pi1 extends tslib_pibase {
 		}
 
 		if (!empty($message)) {
-			$markers['###ERROR_MESSAGE###'] = $this->cObj->stdWrap($message,$this->conf['errorWrap.']);
+			$markers['ERROR_MESSAGE'] = $this->cObj->stdWrap($message,$this->conf['errorWrap.']);
 		}
 		else {
-			$markers['###ERROR_MESSAGE###'] = '';
+			$markers['ERROR_MESSAGE'] = '';
 		}
-		$markers['###FORM_URL###'] = $providerObj->transaction_formGetActionURI();
-		$markers['###FORM_NAME###'] = $this->conf['formName'];
-		$markers['###FORM_FORM_PARAMS###'] = $providerObj->transaction_formGetFormParms();
+		$markers['FORM_URL'] = $providerObj->transaction_formGetActionURI();
+		$markers['FORM_NAME'] = $this->conf['formName'];
+		$markers['FORM_FORM_PARAMS'] = $providerObj->transaction_formGetFormParms();
 		$backURL = $this->pi_getPageLink($GLOBALS['TSFE']->id, '', array('tx_donations[view]' => 'donate'));
-//		$markers['###BUTTONS###'] = '<input type="submit" id="backButton" name="tx_donations[donate]" value="'.$this->pi_getLL('back').'" onclick="this.form.action=\''.$backURL.'\'" disabled="true" />';
-		$markers['###BUTTONS###'] = '<input type="submit" id="backButton" name="back" value="'.$this->pi_getLL('back').'" onclick="this.form.action=\''.$backURL.'\'" disabled="true" />';
-		$markers['###BUTTONS###'] .= '&nbsp;<input type="submit" name="submit" value="'.$this->pi_getLL('confirm').'" '.($providerObj->transaction_formGetSubmitParms()).' />';
-		$markers['###BUTTONS###'] .= '<script>document.forms["donateForm"].backButton.disabled=false;</script><noscript><p>'.$this->pi_getLL('no_javascript_message').'</p></noscript>';
+//		$markers['BUTTONS'] = '<input type="submit" id="backButton" name="tx_donations[donate]" value="'.$this->pi_getLL('back').'" onclick="this.form.action=\''.$backURL.'\'" disabled="true" />';
+		$markers['BUTTONS'] = '<input type="submit" id="backButton" name="back" value="'.$this->pi_getLL('back').'" onclick="this.form.action=\''.$backURL.'\'" disabled="true" />';
+		$markers['BUTTONS'] .= '&nbsp;<input type="submit" name="submit" value="'.$this->pi_getLL('confirm').'" '.($providerObj->transaction_formGetSubmitParms()).' />';
+		$markers['BUTTONS'] .= '<script>document.forms["donateForm"].backButton.disabled=false;</script><noscript><p>'.$this->pi_getLL('no_javascript_message').'</p></noscript>';
 		if (empty($this->conf['confirmView.']['projectTitle.'])) {
-			$markers['###PROJECT_TITLE###'] = '';
+			$markers['PROJECT_TITLE'] = '';
 		}
 		else {
-			$markers['###PROJECT_TITLE###'] = $this->cObj->stdWrap('',$this->conf['confirmView.']['projectTitle.']);
+			$markers['PROJECT_TITLE'] = $this->cObj->stdWrap('',$this->conf['confirmView.']['projectTitle.']);
 		}
 
 // Display input data for confirmation
 
-		$markers['###PAYMETHOD###'] = $GLOBALS['TSFE']->sL($paymethodLabel);
-		$markers['###AMOUNT_VAL###'] = $this->moneylibObj->format($amount, $currency['cu_iso_3'], false);
-		$markers['###CURRENCY###'] = $currency['cu_iso_3'];
+		$markers['PAYMETHOD'] = $GLOBALS['TSFE']->sL($paymethodLabel);
+		$markers['AMOUNT_VAL'] = $this->moneylibObj->format($amount, $currency['cu_iso_3'], false);
+		$markers['CURRENCY'] = $currency['cu_iso_3'];
 
-		$markers['###PAYMENT_DETAILS###'] = implode('', $visibleFields);
+		$markers['PAYMENT_DETAILS'] = implode('', $visibleFields);
 
-		$markers['###COMPANY_VAL###'] = $this->getPiVars('company', true);
-		$markers['###NAME_VAL###'] = $this->getPiVars('name', true);
-		$markers['###ADDR_VAL###'] = $this->getPiVars('addr', true);
-		$markers['###ZIP_VAL###'] = $this->getPiVars('zip', true);
-		$markers['###CITY_VAL###'] = $this->getPiVars('city', true);
-		$markers['###COUNTRY_VAL###'] = $this->getPiVars('country', true);
-		$markers['###EMAIL_VAL###'] = $this->getPiVars('email', true);
-		$markers['###HIDDEN_FIELDS###'] = implode("\n", $hiddenFields);
-		return $this->substituteMarkerArray($subpart, $markers);
+		$markers['COMPANY_VAL'] = $this->getPiVars('company', true);
+		$markers['NAME_VAL'] = $this->getPiVars('name', true);
+		$markers['ADDR_VAL'] = $this->getPiVars('addr', true);
+		$markers['ZIP_VAL'] = $this->getPiVars('zip', true);
+		$markers['CITY_VAL'] = $this->getPiVars('city', true);
+		$markers['COUNTRY_VAL'] = $this->getPiVars('country', true);
+		$markers['EMAIL_VAL'] = $this->getPiVars('email', true);
+		$markers['HIDDEN_FIELDS'] = implode("\n", $hiddenFields);
+		return $this->substituteMarkerArray($subpart, $markers, '###|###');
 	}
 
 	/**
@@ -533,40 +533,40 @@ class tx_donations_pi1 extends tslib_pibase {
 		}
 
 		if (empty($this->conf['receiptView.']['projectTitle.'])) {
-			$markers['###PROJECT_TITLE###'] = '';
+			$markers['PROJECT_TITLE'] = '';
 		}
 		else {
-			$markers['###PROJECT_TITLE###'] = $this->cObj->stdWrap('',$this->conf['receiptView.']['projectTitle.']);
+			$markers['PROJECT_TITLE'] = $this->cObj->stdWrap('',$this->conf['receiptView.']['projectTitle.']);
 		}
-		$markers['###MESSAGE###'] = $this->cObj->cObjGetSingle($this->conf['thankMessage'], $this->conf['thankMessage.'], 'thankMessage');
+		$markers['MESSAGE'] = $this->cObj->cObjGetSingle($this->conf['thankMessage'], $this->conf['thankMessage.'], 'thankMessage');
 
-		$markers['###PAYMENT_REFERENCE###'] = $paymentReference;
-		$markers['###PAYMETHOD###'] = $GLOBALS['TSFE']->sL($paymethodLabel);
-		$markers['###AMOUNT_VAL###'] = $this->moneylibObj->format($amount * $currency['cu_sub_divisor'], $currency['cu_iso_3'], false);
-		$markers['###CURRENCY###'] = $currency['cu_iso_3'];
+		$markers['PAYMENT_REFERENCE'] = $paymentReference;
+		$markers['PAYMETHOD'] = $GLOBALS['TSFE']->sL($paymethodLabel);
+		$markers['AMOUNT_VAL'] = $this->moneylibObj->format($amount * $currency['cu_sub_divisor'], $currency['cu_iso_3'], false);
+		$markers['CURRENCY'] = $currency['cu_iso_3'];
 
-		$markers['###COMPANY_VAL###'] = $this->getPiVars('company');
-		$markers['###NAME_VAL###'] = $this->getPiVars('name');
-		$markers['###ADDR_VAL###'] = $this->getPiVars('addr');
-		$markers['###ZIP_VAL###'] = $this->getPiVars('zip');
-		$markers['###CITY_VAL###'] = $this->getPiVars('city');
-		$markers['###COUNTRY_VAL###'] = $this->getPiVars('country');
-		$markers['###EMAIL_VAL###'] = $this->getPiVars('email');
+		$markers['COMPANY_VAL'] = $this->getPiVars('company');
+		$markers['NAME_VAL'] = $this->getPiVars('name');
+		$markers['ADDR_VAL'] = $this->getPiVars('addr');
+		$markers['ZIP_VAL'] = $this->getPiVars('zip');
+		$markers['CITY_VAL'] = $this->getPiVars('city');
+		$markers['COUNTRY_VAL'] = $this->getPiVars('country');
+		$markers['EMAIL_VAL'] = $this->getPiVars('email');
 
 // Prepare markers for confirmation mails, if necessary
 
 		if (!empty($this->conf['mail.']['sendToAdmin']) || !empty($this->conf['mail.']['sendToUser'])) {
 			require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 			$mailMarkers = $markers;
-			$mailMarkers['###PROJECT_TITLE###'] = (empty($uid)) ? '-' : $row['title'];
-			$mailMarkers['###DATE_VAL###'] = $this->cObj->stdWrap(time(),$this->conf['mail.']['dateWrap.']);
+			$mailMarkers['PROJECT_TITLE'] = (empty($uid)) ? '-' : $row['title'];
+			$mailMarkers['DATE_VAL'] = $this->cObj->stdWrap(time(),$this->conf['mail.']['dateWrap.']);
 
 // Send mail to admin
 
 			if (!empty($this->conf['mail.']['sendToAdmin'])) {
-				$mailMarkers['###MESSAGE###'] = $this->conf['mail.']['adminMessage'];
+				$mailMarkers['MESSAGE'] = $this->conf['mail.']['adminMessage'];
 				$mailSubpart = $this->cObj->getSubpart($this->template, '###ADMINMAIL###');
-				$mailText = $this->substituteMarkerArray($mailSubpart, $mailMarkers);
+				$mailText = $this->substituteMarkerArray($mailSubpart, $mailMarkers, '###|###');
 				$adminMailObj = t3lib_div::makeInstance('t3lib_htmlmail');
 				$adminMailObj->start();
 				$adminMailObj->subject = $this->conf['mail.']['adminSubject'];
@@ -582,9 +582,9 @@ class tx_donations_pi1 extends tslib_pibase {
 // Send mail to user
 
 			if (!empty($this->conf['mail.']['sendToUser'])) {
-				$mailMarkers['###MESSAGE###'] = $this->conf['mail.']['userMessage'];
+				$mailMarkers['MESSAGE'] = $this->conf['mail.']['userMessage'];
 				$mailSubpart = $this->cObj->getSubpart($this->template, '###USERMAIL###');
-				$mailText = $this->substituteMarkerArray($mailSubpart, $mailMarkers);
+				$mailText = $this->substituteMarkerArray($mailSubpart, $mailMarkers, '###|###');
 				$userMailObj = t3lib_div::makeInstance('t3lib_htmlmail');
 				$userMailObj->start();
 				$userMailObj->subject = $this->conf['mail.']['userSubject'];
@@ -602,7 +602,7 @@ class tx_donations_pi1 extends tslib_pibase {
 			}
 		}
 
-		return $this->substituteMarkerArray($subpart, $markers);
+		return $this->substituteMarkerArray($subpart, $markers, '###|###');
 	}
 
 	/**
@@ -715,12 +715,12 @@ class tx_donations_pi1 extends tslib_pibase {
 	 *
 	 * @return	string		The processed output stream
 	 */
-	protected function substituteMarkerArray($content,$markerArray, $wrap, $uppercase) {
+	protected function substituteMarkerArray($content, $markerArray, $wrap = '', $uppercase = false) {
 		if (t3lib_div::compat_version('4.2')) { // Call the newer method, but force unreplaced markers to be deleted
 			return t3lib_parsehtml::substituteMarkerArray($content, $markerArray, $wrap, $uppercase, true);
 		}
 		else {
-			return $this->cObj->substituteMarkerArray($content, $markerArray);
+			return $this->cObj->substituteMarkerArray($content, $markerArray, $wrap, $uppercase);
 		}
 	}
 
