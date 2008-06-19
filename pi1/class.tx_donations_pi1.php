@@ -34,7 +34,7 @@ require_once(t3lib_extMgm::extPath('paymentlib').'lib/class.tx_paymentlib_provid
  * Plugin 'Donations' for the 'donations' extension.
  * Displays projects to donate to and various screens for the donation process
  *
- * @author	Tonni Aagesen <t3dev@support.pil.dk>, Francois Suter <support@cobweb.ch>
+ * @author	Tonni Aagesen <t3dev@support.pil.dk>, Francois Suter <typo3@cobweb.ch>
  * @package	TYPO3
  * @subpackage	tx_donations
  */

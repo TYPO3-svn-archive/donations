@@ -1,3 +1,12 @@
+08-05-24 Francois Suter <support@cobweb.ch>
+
+	* corrected use of $this->conf (thanks to Benni Mack)
+	* added German translation (thanks to Benni Mack)
+	* fixed bug in handling of min and max amount (thanks to Benni Mack)
+	* fixed bug in sending mails (thanks to Benni Mack)
+	* cleaned up a lot of code
+	* added security checks against XSS and email injection
+
 07-09-12 Francois Suter <support@cobweb.ch>
 
 	* complete donation process (with back buttons where appropriate)
