@@ -1,4 +1,4 @@
-08-05-24 Francois Suter <support@cobweb.ch>
+08-06-23 Francois Suter <typo3@cobweb.ch>
 
 	* corrected use of $this->conf (thanks to Benni Mack)
 	* added German translation (thanks to Benni Mack)
@@ -6,8 +6,9 @@
 	* fixed bug in sending mails (thanks to Benni Mack)
 	* cleaned up a lot of code
 	* added security checks against XSS and email injection
+	* TYPO3 4.2 compatibility enhancements
 
-07-09-12 Francois Suter <support@cobweb.ch>
+07-09-12 Francois Suter <typo3@cobweb.ch>
 
 	* complete donation process (with back buttons where appropriate)
 	* input error handling (server-side)
