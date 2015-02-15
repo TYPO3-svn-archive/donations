@@ -1,4 +1,8 @@
-08-06-23 Francois Suter <typo3@cobweb.ch>
+2015-02-15 Francois Suter <typo3@cobweb.ch>
+
+	* Marked as obsolete.
+
+2008-06-23 Francois Suter <typo3@cobweb.ch>
 
 	* corrected use of $this->conf (thanks to Benni Mack)
 	* added German translation (thanks to Benni Mack)
@@ -8,7 +12,7 @@
 	* added security checks against XSS and email injection
 	* TYPO3 4.2 compatibility enhancements
 
-07-09-12 Francois Suter <typo3@cobweb.ch>
+2007-09-12 Francois Suter <typo3@cobweb.ch>
 
 	* complete donation process (with back buttons where appropriate)
 	* input error handling (server-side)
@@ -19,6 +23,6 @@
 	* manual
 	* many other small improvements
 
-07-01-18 Tonni Aagesen  <t3dev@support.pil.dk>
+2007-01-18 Tonni Aagesen  <t3dev@support.pil.dk>
 
 	* Initial release
